@@ -23,14 +23,29 @@ public class NewPerson extends JPanel {
 	public String[] getArray(){
 		String[] result = {textField_Fname.getText(), textField_Lname.getText(), textField_Address.getText(), 
 				textField_City.getText(), textField_State.getText(), textField_ZIP.getText(), 
-				textField_Phone.getText(), };
+				textField_Phone.getText()};
 		return result;
 	}
 	
 	/**
 	 * Create the panel.
 	 */
+	public NewPerson(String[] params){
+		initPrompt();
+		textField_Fname.setText(params[0]);
+		textField_Lname.setText(params[1]);
+		textField_Address.setText(params[2]);
+		textField_City.setText(params[3]);
+		textField_State.setText(params[4]);
+		textField_ZIP.setText(params[5]);
+		textField_Phone.setText(params[6]);
+	}
+	
 	public NewPerson() {
+		initPrompt();
+	}
+	
+	public void initPrompt(){
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel panel_form = new JPanel();
@@ -149,7 +164,6 @@ public class NewPerson extends JPanel {
 		textField_Phone = new JTextField();
 		paneli_Phone.add(textField_Phone);
 		textField_Phone.setColumns(20);
-		
 	}
 
 }

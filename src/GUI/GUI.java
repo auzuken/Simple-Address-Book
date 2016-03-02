@@ -366,6 +366,24 @@ public class GUI extends JFrame {
 				btnDeletePerson.setEnabled(false);
 			}
 		});
+		
+		//Clicked Edit Person
+		btnEditPerson.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				//Custom Prompt for Person information
+				NewPerson newPerson = new NewPerson(((Person) list_persons.getSelectedValue()).getArray()); 
+				int returnValue = JOptionPane.showConfirmDialog(null, newPerson, "Add new Person", 2);
+				
+				if(returnValue==JOptionPane.OK_OPTION){
+					abc.deletePerson((Person)list_persons.getSelectedValue());
+					abc.addPerson(newPerson.getArray());
+					list_persons.removeAll();
+					ArrayList<Person> peoArray = abc.getAddressBookInfo();
+					list_persons.setListData(peoArray.toArray());
+				}
+			}
+		});
 	}
 	
 	private void changeTitle(String s){
