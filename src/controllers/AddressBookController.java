@@ -60,6 +60,18 @@ public class AddressBookController {
 		else
 			return false;
 	}
+	
+	/**
+	 * @param file
+	 *            enter a new file object to write to
+	 * @return returns true if this worked and false otherwise
+	 */
+	public boolean saveAddressBook(File file) {
+		if (fileSys.saveFile(currentBook, file))
+			return true;
+		else
+			return false;
+	}
 
 	/**
 	 * @param strPerson

@@ -306,7 +306,7 @@ public class GUI extends JFrame {
 					if (returnValue == JFileChooser.APPROVE_OPTION) {
 						list_persons.removeAll();
 						File selectedFile = fileChooser.getSelectedFile();
-						abc.createAddressBook(selectedFile);
+						abc.saveAddressBook(selectedFile);
 					}
 				} catch (HeadlessException e1) {
 					// TODO Auto-generated catch block
@@ -340,6 +340,7 @@ public class GUI extends JFrame {
 			}
 		});
 		
+		//JList Selection changes
 		list_persons.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				if(list_persons.getSelectedValue()==null){
@@ -349,6 +350,20 @@ public class GUI extends JFrame {
 					btnEditPerson.setEnabled(true);
 					btnDeletePerson.setEnabled(true);
 				}
+			}
+		});
+		
+		//Clicked Delete Person
+		btnDeletePerson.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				abc.deletePerson((Person)list_persons.getSelectedValue());
+				list_persons.removeAll();
+				ArrayList<Person> peoArray = abc.getAddressBookInfo();
+				list_persons.setListData(peoArray.toArray());
+				
+				btnEditPerson.setEnabled(false);
+				btnDeletePerson.setEnabled(false);
 			}
 		});
 	}
