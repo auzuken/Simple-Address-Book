@@ -58,7 +58,7 @@ public class GUI extends JFrame {
 
 	private JPanel contentPane;
 	private AddressBookController abc;
-	private boolean isSaved;
+	private boolean canSave;
 	
 	////Initialize Components
 	//File
@@ -77,6 +77,8 @@ public class GUI extends JFrame {
 	JMenuItem mntmByZip;
 	JMenuItem mntmByName;
 	JMenuItem mntmByPhone;
+	JSeparator separator_2;
+	JMenuItem mntmResetSearch;
 	
 	//Workspace
 	JPanel workSpace;
@@ -111,7 +113,7 @@ public class GUI extends JFrame {
 		
 		//Initialize Controller
 		abc = new AddressBookController();
-		isSaved = true;
+		canSave = false;
 		
 		setResizable(false);
 		setTitle("");
@@ -140,6 +142,8 @@ public class GUI extends JFrame {
 		mntmByZip = new JMenuItem("by ZIP");
 		mntmByName = new JMenuItem("by Name");
 		mntmByPhone = new JMenuItem("by Phone");
+		separator_2 = new JSeparator();
+		mntmResetSearch = new JMenuItem("Reset Search");
 		
 		//Workspace
 		workSpace = new JPanel();
@@ -173,6 +177,8 @@ public class GUI extends JFrame {
 		mnSearch.add(mntmByName);
 		mntmByPhone.setEnabled(false);
 		mnSearch.add(mntmByPhone);
+		mnSearch.add(separator_2);
+		mnSearch.add(mntmResetSearch);		
 		
 		//Workspace
 		workSpace.setBounds(10, 32, 424, 428);
@@ -208,7 +214,7 @@ public class GUI extends JFrame {
 			public void mouseReleased(MouseEvent e) {
 				
 				//Ask if the user really wants to make a new Address Book and lose changes
-				if(!isSaved){
+				if(canSave){
 					int dialogButton = JOptionPane.YES_NO_CANCEL_OPTION;
 					int dialogResult = JOptionPane.showConfirmDialog(null, "Creating a new Address Book will delete unsaved changed! "
 							+ "Would you like to create a new Address Book?", "Warning", dialogButton);
@@ -227,9 +233,12 @@ public class GUI extends JFrame {
 				
 				//Enable buttons
 				btnAddPerson.setEnabled(true);
+				mntmSaveAddressbook.setEnabled(false);
 				mntmSaveAddressbookAs.setEnabled(true);
 				
-				isSaved = true;
+				//We cannot use the Save option on a new document
+				//that has not been saved to the disk yet
+				canSave = false;
 			}
 		});
 		
@@ -259,10 +268,15 @@ public class GUI extends JFrame {
 
 						//Enable buttons
 						btnAddPerson.setEnabled(true);
+						mntmSaveAddressbook.setEnabled(false);
 						mntmSaveAddressbookAs.setEnabled(true);
 						mntmByZip.setEnabled(true);
 						mntmByName.setEnabled(true);
 						mntmByPhone.setEnabled(true);
+						
+						//We cannot save a newly opened AB until
+						//it has been editted
+						canSave = false;
 					}
 
 				} catch (Exception e1) {
@@ -275,13 +289,12 @@ public class GUI extends JFrame {
 		mntmSaveAddressbook.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				if(isSaved){
-					mntmSaveAddressbook.setEnabled(false);
-					return;
-				}
-				if(abc.createAddressBook(abc.getFile())){
-					isSaved = true;
+				if(abc.saveAddressBook(abc.getFile())){
+					canSave = false;
 					changeTitle(abc.getFile().getName());
+					
+					//Enable Buttons
+					mntmSaveAddressbook.setEnabled(false);
 				}
 			}
 		});
@@ -307,6 +320,13 @@ public class GUI extends JFrame {
 						list_persons.removeAll();
 						File selectedFile = fileChooser.getSelectedFile();
 						abc.saveAddressBook(selectedFile);
+						
+						changeTitle(abc.getFile().getName());
+						
+						//Enable Buttons
+						mntmSaveAddressbook.setEnabled(false);
+						
+						canSave = false;
 					}
 				} catch (HeadlessException e1) {
 					// TODO Auto-generated catch block
@@ -336,6 +356,12 @@ public class GUI extends JFrame {
 					list_persons.removeAll();
 					ArrayList<Person> peoArray = abc.getAddressBookInfo();
 					list_persons.setListData(peoArray.toArray());
+					
+					//Enable Buttons
+					mntmSaveAddressbook.setEnabled(true);
+					
+					changeTitle(abc.getFile().getName()+"*");
+					canSave = true;
 				}
 			}
 		});
@@ -362,8 +388,12 @@ public class GUI extends JFrame {
 				ArrayList<Person> peoArray = abc.getAddressBookInfo();
 				list_persons.setListData(peoArray.toArray());
 				
+				mntmSaveAddressbook.setEnabled(true);
 				btnEditPerson.setEnabled(false);
 				btnDeletePerson.setEnabled(false);
+				
+				changeTitle(abc.getFile().getName()+"*");
+				canSave = true;
 			}
 		});
 		
@@ -381,6 +411,12 @@ public class GUI extends JFrame {
 					list_persons.removeAll();
 					ArrayList<Person> peoArray = abc.getAddressBookInfo();
 					list_persons.setListData(peoArray.toArray());
+					
+					//Enable Buttons
+					mntmSaveAddressbook.setEnabled(true);
+					
+					changeTitle(abc.getFile().getName()+"*");
+					canSave = true;
 				}
 			}
 		});
